@@ -11,11 +11,13 @@ class Space(Base):
     id = sa.Column(sa.Integer, primary_key=True, index=True)
     name = sa.Column(sa.String(32), nullable=False, unique=True)
     is_refrigerated = sa.Column(sa.Boolean, nullable=False)
+    max_capacity = sa.Column(sa.Integer, nullable=False)
     items = relationship('Item', back_populates='space')
 
-    def __init__(self, name, is_refrigerated):
+    def __init__(self, name, is_refrigerated, max_capacity):
         self.name = name
         self.is_refrigerated = is_refrigerated
+        self.max_capacity = max_capacity
 
     def __repr__(self):
         return '<Space(name="{}", is_refrigerated="{}")>'.format(

@@ -18,6 +18,7 @@ def create_space(db: Session, space: schemas.SpaceCreate):
     db_space = models.Space(
         name=space.name,
         is_refrigerated=space.is_refrigerated,
+        max_capacity=space.max_capacity,
     )
     db.add(db_space)
     db.commit()
