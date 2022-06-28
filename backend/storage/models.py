@@ -97,7 +97,7 @@ class Item(Base):
 
     def __init__(self, name, expiration_date, item_type_id, storage_space_id):
         self.name = name
-        self.is_kept_cold = expiration_date
+        self.expiration_date = expiration_date
         self.item_type_id = item_type_id
         self.storage_space_id = storage_space_id
 
