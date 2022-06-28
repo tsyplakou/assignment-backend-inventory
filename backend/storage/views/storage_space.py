@@ -61,10 +61,22 @@ async def read_storage_space_by_id(
 )
 async def update_storage_space(
     storage_space_id: int,
-    storage_space: schemas.StorageSpaceCreate,
+    storage_space: schemas.StorageSpaceUpdate,
     db: Session = Depends(get_db),
 ):
-    # can;t remove refrigarated if items inside
+    current_storage_space = crud.get_storage_space_by_id(db, storage_space_id)
+    if (
+        storage_space.is_refrigerated != current_storage_space.is_refrigerated
+        and
+        crud.get_items_in_storage_place(db, storage_space_id)
+    ):
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                'Storage space refregerating can\'t be updated when items '
+                'inside.'
+            ),
+        )
     return crud.update_storage_space(db, storage_space_id, storage_space)
 
 
@@ -78,6 +90,12 @@ async def read_items_in_storage_place(
 ):
     db_storage_space = crud.get_storage_space_by_id(db, storage_space_id)
     if db_storage_space:
+        if crud.get_items_in_storage_place(db, storage_space_id):
+            raise HTTPException(
+                status_code=400,
+                detail='Storage space contains items. It can\'t be deleted.',
+            )
+
         crud.remove_storage_place(db, storage_space_id)
         return Response(status_code=204)
     return Response(status_code=404)

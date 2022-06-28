@@ -13,7 +13,8 @@ class StorageSpaceCreate(StorageSpaceBase):
 
 
 class StorageSpaceUpdate(StorageSpaceBase):
-    pass
+    name: str = Field(max_length=32)
+    is_refrigerated: bool
 
 
 class StorageSpace(StorageSpaceBase):
