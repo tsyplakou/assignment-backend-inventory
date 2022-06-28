@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from . import models, schemas
+from .. import models, schemas
 
 
 def get_storage_space_by_id(db: Session, storage_space_id: int):
