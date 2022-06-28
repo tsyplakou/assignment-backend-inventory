@@ -18,6 +18,6 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DB_URL=postgresql+psycopg2://docker:docker@db:5432/storage
+      - DB_URL=postgresql+psycopg2://postgres:postgres@db:5432/storage
     depends_on:
       - db

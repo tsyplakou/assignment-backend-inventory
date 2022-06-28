@@ -6,7 +6,8 @@ from sqlalchemy.orm import Session
 
 from db import Base, engine, SessionLocal, schemas, crud
 
-Base.metadata.create_all(bind=engine)
+# Use existing db
+# Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
