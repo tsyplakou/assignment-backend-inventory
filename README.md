@@ -1,3 +1,9 @@
+# How to run
+
+```
+docker-compose up
+```
+
 # Rocketloop Coding Assignment - Inventory Management API
 
 Hi there 👋
