@@ -65,3 +65,7 @@ VALUES
        ('Harry’s', '2022-08-26', 4, 2),
        ('Harry’s', '2022-08-26', 4, 3),
        ('Harry’s', '2022-08-26', 4, 2);
+
+
+SELECT pg_catalog.setval(pg_get_serial_sequence('storage_space', 'id'), MAX(id)) FROM storage_space;
+SELECT pg_catalog.setval(pg_get_serial_sequence('item_type', 'id'), MAX(id)) FROM item_type;
