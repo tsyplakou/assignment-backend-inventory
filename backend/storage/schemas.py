@@ -37,7 +37,7 @@ class ItemTypeCreate(ItemTypeBase):
 
 
 class ItemTypeUpdate(ItemTypeBase):
-    pass
+    name: str = Field(max_length=32)
 
 
 class ItemType(ItemTypeBase):
@@ -61,7 +61,8 @@ class ItemCreate(ItemBase):
 
 
 class ItemUpdate(ItemBase):
-    pass
+    name: str = Field(max_length=32)
+    storage_space_id: int
 
 
 class Item(ItemBase):
