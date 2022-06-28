@@ -3,24 +3,26 @@ from sqlalchemy.orm import Session
 from . import models, schemas
 
 
-def get_space(db: Session, space_id: int):
-    return db.query(models.Space).filter(models.Space.id == space_id).first()
-
-def get_space_by_name(db: Session, space_name: int):
-    return db.query(models.Space).filter(
-        models.Space.name == space_name
+def get_storage_space(db: Session, storage_space_id: int):
+    return db.query(models.StorageSpace).filter(
+        models.StorageSpace.id == storage_space_id
     ).first()
 
-def get_spaces(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Space).offset(skip).limit(limit).all()
+def get_storage_space_by_name(db: Session, storage_space_name: int):
+    return db.query(models.StorageSpace).filter(
+        models.StorageSpace.name == storage_space_name
+    ).first()
 
-def create_space(db: Session, space: schemas.SpaceCreate):
-    db_space = models.Space(
-        name=space.name,
-        is_refrigerated=space.is_refrigerated,
-        max_capacity=space.max_capacity,
+def get_storage_spaces(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.StorageSpace).offset(skip).limit(limit).all()
+
+def create_storage_space(db: Session, storage_space: schemas.StorageSpaceCreate):
+    db_storage_space = models.StorageSpace(
+        name=storage_space.name,
+        is_refrigerated=storage_space.is_refrigerated,
+        max_capacity=storage_space.max_capacity,
     )
-    db.add(db_space)
+    db.add(db_storage_space)
     db.commit()
-    db.refresh(db_space)
-    return db_space
+    db.refresh(db_storage_space)
+    return db_storage_space

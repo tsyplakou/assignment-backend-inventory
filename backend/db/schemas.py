@@ -1,21 +1,21 @@
 from pydantic import BaseModel, constr
 
 
-class SpaceBase(BaseModel):
+class StorageSpaceBase(BaseModel):
     name: constr(max_length=32)
     is_refrigerated: bool
     max_capacity: int
 
 
-class SpaceCreate(SpaceBase):
+class StorageSpaceCreate(StorageSpaceBase):
     pass
 
 
-class SpaceUpdate(SpaceBase):
+class StorageSpaceUpdate(StorageSpaceBase):
     pass
 
 
-class Space(SpaceBase):
+class StorageSpace(StorageSpaceBase):
     id: int
     name: constr(max_length=32)
     is_refrigerated: bool

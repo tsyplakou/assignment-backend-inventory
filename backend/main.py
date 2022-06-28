@@ -27,15 +27,25 @@ def get_db(request: Request):
     return request.state.db
 
 
-@app.post("/spaces/", response_model=schemas.Space)
-def create_space(space: schemas.SpaceCreate, db: Session = Depends(get_db)):
-    db_space = crud.get_space_by_name(db, space.name)
-    if db_space:
-        raise HTTPException(status_code=400, detail="Space with this name already exists.")
-    return crud.create_space(db=db, space=space)
+@app.post("/storage_spaces/", response_model=schemas.StorageSpace)
+def create_storage_space(
+    storage_space: schemas.StorageSpaceCreate,
+    db: Session = Depends(get_db),
+):
+    db_storage_space = crud.get_storage_space_by_name(db, storage_space.name)
+    if db_storage_space:
+        raise HTTPException(
+            status_code=400,
+            detail="Storage space with this name already exists.",
+        )
+    return crud.create_storage_space(db=db, storage_space=storage_space)
 
 
-@app.get("/spaces/", response_model=List[schemas.Space])
-def read_spaces(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    spaces = crud.get_spaces(db, skip=skip, limit=limit)
-    return spaces
+@app.get("/storage_spaces/", response_model=List[schemas.StorageSpace])
+def read_storage_spaces(
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+):
+    storage_spaces = crud.get_storage_spaces(db, skip=skip, limit=limit)
+    return storage_spaces

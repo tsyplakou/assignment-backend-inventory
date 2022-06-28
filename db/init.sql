@@ -4,7 +4,7 @@ CREATE DATABASE storage;
 
 \c storage;
 
-CREATE TABLE space (
+CREATE TABLE storage_space (
     id SERIAL NOT NULL,
     name VARCHAR(32) NOT NULL,
     is_refrigerated BOOLEAN NOT NULL,
@@ -27,14 +27,14 @@ CREATE TABLE item (
     name VARCHAR(32) NOT NULL,
     expiration_date DATE NOT NULL,
     item_type_id INTEGER NOT NULL,
-    space_id INTEGER NOT NULL,
+    storage_space_id INTEGER NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY(item_type_id) REFERENCES item_type (id),
-    FOREIGN KEY(space_id) REFERENCES space (id)
+    FOREIGN KEY(storage_space_id) REFERENCES storage_space (id)
 );
 
 
-INSERT INTO space (id, name, is_refrigerated, max_capacity)
+INSERT INTO storage_space (id, name, is_refrigerated, max_capacity)
 VALUES
        (1, 'Refrigerator small', true, 10),
        (2, 'Refrigerator big', true, 30),
@@ -50,7 +50,7 @@ VALUES
        (4, 'Bread', false);
 
 
-INSERT INTO item (name, expiration_date, item_type_id, space_id)
+INSERT INTO item (name, expiration_date, item_type_id, storage_space_id)
 VALUES
        ('Ben & Jerry’s', '2022-12-31', 1, 1),
        ('Ben & Jerry’s', '2022-11-20', 1, 1),

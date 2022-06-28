@@ -4,15 +4,15 @@ from sqlalchemy.orm import relationship
 from .base import Base
 
 
-class Space(Base):
-    __tablename__ = 'space'
+class StorageSpace(Base):
+    __tablename__ = 'storage_space'
     __table_args__ = {'extend_existing': True}
 
     id = sa.Column(sa.Integer, primary_key=True, index=True)
     name = sa.Column(sa.String(32), nullable=False, unique=True)
     is_refrigerated = sa.Column(sa.Boolean, nullable=False)
     max_capacity = sa.Column(sa.Integer, nullable=False)
-    items = relationship('Item', back_populates='space')
+    items = relationship('Item', back_populates='storage_space')
 
     def __init__(self, name, is_refrigerated, max_capacity):
         self.name = name
@@ -20,7 +20,7 @@ class Space(Base):
         self.max_capacity = max_capacity
 
     def __repr__(self):
-        return '<Space(name="{}", is_refrigerated="{}")>'.format(
+        return '<StorageSpace(name="{}", is_refrigerated="{}")>'.format(
             self.name,
             self.is_refrigerated,
         )
@@ -67,19 +67,23 @@ class Item(Base):
         back_populates='items',
         lazy='joined',
     )
-    space_id = sa.Column(Space.id.type, sa.ForeignKey(Space.id), nullable=False)
-    space = relationship(
-        'Space',
+    storage_space_id = sa.Column(
+        StorageSpace.id.type,
+        sa.ForeignKey(StorageSpace.id),
+        nullable=False,
+    )
+    storage_space = relationship(
+        'StorageSpace',
         back_populates='items',
         lazy='joined',
         cascade="save-update",
     )
 
-    def __init__(self, name, expiration_date, item_type_id, space_id):
+    def __init__(self, name, expiration_date, item_type_id, storage_space_id):
         self.name = name
         self.is_kept_cold = expiration_date
         self.item_type_id = item_type_id
-        self.space_id = space_id
+        self.storage_space_id = storage_space_id
 
     def __repr__(self):
         return '<Item(name="{}", expiration_date="{}")>'.format(
