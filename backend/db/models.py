@@ -20,9 +20,12 @@ class StorageSpace(Base):
         self.max_capacity = max_capacity
 
     def __repr__(self):
-        return '<StorageSpace(name="{}", is_refrigerated="{}")>'.format(
+        return (
+            '<StorageSpace(name="{}", is_refrigerated="{}", max_capacity="{}")>'
+        ).format(
             self.name,
             self.is_refrigerated,
+            self.max_capacity,
         )
 
 
