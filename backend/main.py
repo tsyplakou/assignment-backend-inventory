@@ -1,12 +1,8 @@
-from typing import List
-
-from fastapi import Depends, HTTPException
 from fastapi import FastAPI, Request, Response
-from sqlalchemy.orm import Session
 
-from settings.base import SessionLocal, engine
-from storage import schemas, crud
-from storage.models import Base
+from settings.base import SessionLocal
+from storage.views import item
+from storage.views import item_type
 from storage.views import storage_space
 
 # Use existing db
@@ -14,6 +10,8 @@ from storage.views import storage_space
 
 app = FastAPI()
 app.include_router(storage_space.router)
+app.include_router(item_type.router)
+app.include_router(item.router)
 
 
 @app.middleware('http')
