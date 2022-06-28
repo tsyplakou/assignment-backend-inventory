@@ -17,7 +17,6 @@ def get_db(request: Request):
     return request.state.db
 
 
-
 @router.post('/', response_model=schemas.StorageSpace)
 async def create_storage_space(
     storage_space: schemas.StorageSpaceCreate,
@@ -84,7 +83,7 @@ async def update_storage_space(
     '/{storage_space_id}/',
     response_model=bool,
 )
-async def read_items_in_storage_place(
+async def delete_storage_place(
     storage_space_id: int,
     db: Session = Depends(get_db),
 ):

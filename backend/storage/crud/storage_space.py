@@ -8,7 +8,7 @@ def get_storage_space_by_id(db: Session, storage_space_id: int):
         models.StorageSpace.id == storage_space_id
     ).first()
 
-def get_storage_space_by_name(db: Session, storage_space_name: int):
+def get_storage_space_by_name(db: Session, storage_space_name: str):
     return db.query(models.StorageSpace).filter(
         models.StorageSpace.name == storage_space_name
     ).first()
