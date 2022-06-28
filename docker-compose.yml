@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+  web:
+    build: .
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8000'
+    volumes:
+      - ./backend:/code
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_URL=postgresql+psycopg2://docker:docker@db:5432/storage
+    depends_on:
+      - db
