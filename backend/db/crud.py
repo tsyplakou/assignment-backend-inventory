@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from . import models, schemas
 
 
-def get_storage_space(db: Session, storage_space_id: int):
+def get_storage_space_by_id(db: Session, storage_space_id: int):
     return db.query(models.StorageSpace).filter(
         models.StorageSpace.id == storage_space_id
     ).first()
@@ -26,3 +26,29 @@ def create_storage_space(db: Session, storage_space: schemas.StorageSpaceCreate)
     db.commit()
     db.refresh(db_storage_space)
     return db_storage_space
+
+
+def update_storage_space(
+    db: Session,
+    storage_space_id: int,
+    storage_space: schemas.StorageSpaceCreate
+):
+    db.query(models.StorageSpace).filter(
+        models.StorageSpace.id == storage_space_id
+    ).update(storage_space.dict())
+    db.commit()
+    return get_storage_space_by_id(db, storage_space_id)
+
+
+def get_items_in_storage_place(db: Session, storage_space_id: int):
+    return db.query(models.Item).filter(
+        models.Item.storage_space_id == storage_space_id
+    ).all()
+
+
+def remove_storage_place(db: Session, storage_space_id: int):
+    db.query(models.StorageSpace).filter(
+        models.StorageSpace.id == storage_space_id
+    ).delete()
+    db.commit()
+    return True
