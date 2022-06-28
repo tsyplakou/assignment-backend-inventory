@@ -1,2 +1,2 @@
-from .models import Item, ItemType, Space
+from .models import Item, ItemType, StorageSpace
 from .base import Base, engine, SessionLocal
