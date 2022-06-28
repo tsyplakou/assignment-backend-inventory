@@ -1,2 +1,2 @@
 from .models import Item, ItemType, Space
-from .base import current_session
+from .base import Base, engine, SessionLocal

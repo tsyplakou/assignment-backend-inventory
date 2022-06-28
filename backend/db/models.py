@@ -9,7 +9,7 @@ class Space(Base):
     __table_args__ = {'extend_existing': True}
 
     id = sa.Column(sa.Integer, primary_key=True, index=True)
-    name = sa.Column(sa.String(32), nullable=False)
+    name = sa.Column(sa.String(32), nullable=False, unique=True)
     is_refrigerated = sa.Column(sa.Boolean, nullable=False)
     items = relationship('Item', back_populates='space')
 
@@ -31,7 +31,11 @@ class ItemType(Base):
     id = sa.Column(sa.Integer, primary_key=True, index=True)
     name = sa.Column(sa.String(32), nullable=False, unique=True)
     is_kept_cold = sa.Column(sa.Boolean, nullable=False)
-    items = relationship('Item', back_populates='item_type', cascade="save-update")
+    items = relationship(
+        'Item',
+        back_populates='item_type',
+        cascade="save-update",
+    )
 
     def __init__(self, name, is_kept_cold):
         self.name = name
@@ -56,9 +60,18 @@ class Item(Base):
         sa.ForeignKey(ItemType.id),
         nullable=False,
     )
-    item_type = relationship('ItemType', back_populates='items', lazy='joined')
+    item_type = relationship(
+        'ItemType',
+        back_populates='items',
+        lazy='joined',
+    )
     space_id = sa.Column(Space.id.type, sa.ForeignKey(Space.id), nullable=False)
-    space = relationship('Space', back_populates='items', lazy='joined', cascade="save-update")
+    space = relationship(
+        'Space',
+        back_populates='items',
+        lazy='joined',
+        cascade="save-update",
+    )
 
     def __init__(self, name, expiration_date, item_type_id, space_id):
         self.name = name
