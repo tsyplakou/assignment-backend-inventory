@@ -1,6 +1,6 @@
-from pydantic import BaseModel, constr, Field
-from datetime import date
-
+from pydantic import BaseModel, constr, Field, FutureDate
+from datetime import date, datetime
+from . import crud
 
 class StorageSpaceBase(BaseModel):
     name: str = Field(max_length=32)
@@ -51,7 +51,7 @@ class ItemType(ItemTypeBase):
 
 class ItemBase(BaseModel):
     name: str = Field(max_length=32)
-    expiration_date: date
+    expiration_date: FutureDate
     item_type_id: int
     storage_space_id: int
 

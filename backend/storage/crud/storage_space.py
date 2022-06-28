@@ -46,7 +46,7 @@ def get_items_in_storage_place(db: Session, storage_space_id: int):
     ).all()
 
 
-def remove_storage_place(db: Session, storage_space_id: int):
+def delete_storage_place(db: Session, storage_space_id: int):
     db.query(models.StorageSpace).filter(
         models.StorageSpace.id == storage_space_id
     ).delete()

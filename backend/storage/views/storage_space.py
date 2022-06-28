@@ -95,7 +95,7 @@ async def delete_storage_place(
                 detail='Storage space contains items. It can\'t be deleted.',
             )
 
-        crud.remove_storage_place(db, storage_space_id)
+        crud.delete_storage_place(db, storage_space_id)
         return Response(status_code=204)
     return Response(status_code=404)
 

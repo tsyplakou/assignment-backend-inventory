@@ -44,7 +44,7 @@ def get_items_with_specific_item_type(db: Session, item_type_id: int):
     ).all()
 
 
-def remove_item_type(db: Session, item_type_id: int):
+def delete_item_type(db: Session, item_type_id: int):
     db.query(models.ItemType).filter(
         models.ItemType.id == item_type_id
     ).delete()

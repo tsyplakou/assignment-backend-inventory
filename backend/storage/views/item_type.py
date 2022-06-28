@@ -93,6 +93,6 @@ async def delete_item_type(
                 detail='Items with this type exist. It can\'t be deleted.',
             )
 
-        crud.remove_item_type(db, item_type_id)
+        crud.delete_item_type(db, item_type_id)
         return Response(status_code=204)
     return Response(status_code=404)
