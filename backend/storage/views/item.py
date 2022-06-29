@@ -31,7 +31,7 @@ async def read_expired_items(db: Session = Depends(get_db)):
     return crud.get_expired_items(db)
 
 
-@router.post('/', response_model=schemas.Item)
+@router.post('/', response_model=schemas.ItemCreate)
 async def create_item(
     item: schemas.ItemCreate,
     db: Session = Depends(get_db),
@@ -45,6 +45,13 @@ async def create_item(
             status_code=400,
             detail='Storage space is full.',
         )
+    item_type = crud.get_item_type_by_id(db, item.item_type_id)
+    if item_type.is_kept_cold and not storage.is_refrigerated:
+        raise HTTPException(
+            status_code=400,
+            detail='This item should be placed to refrigerated storage.',
+        )
+
     return crud.create_item(db=db, item=item)
 
 
@@ -71,6 +78,25 @@ async def update_item(
     item: schemas.ItemUpdate,
     db: Session = Depends(get_db),
 ):
+    current_item = crud.get_item_by_id(db ,item_id)
+    storage = crud.get_storage_space_by_id(db, item.storage_space_id)
+    items_in_storage_count = len(
+        crud.get_items_in_storage_place(db, item.storage_space_id)
+    )
+    if (
+        current_item.storage_space_id != item.storage_space_id and
+        items_in_storage_count >= storage.max_capacity
+    ):
+        raise HTTPException(
+            status_code=400,
+            detail='Storage space is full.',
+        )
+    item_type = crud.get_item_type_by_id(db, current_item.item_type_id)
+    if item_type.is_kept_cold and not storage.is_refrigerated:
+        raise HTTPException(
+            status_code=400,
+            detail='This item should be placed to refrigerated storage.',
+        )
     return crud.update_item(db, item_id, item)
 
 
