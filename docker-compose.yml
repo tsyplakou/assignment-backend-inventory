@@ -23,12 +23,13 @@ services:
       - db
   test_db:
     image: postgres:latest
+    command: -p 5434
     restart: always
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
-      - "5434:5432"
+      - "5434:5434"
     volumes:
       - ./db/init_test.sql:/docker-entrypoint-initdb.d/create_tables.sql
   test:
@@ -37,6 +38,6 @@ services:
     volumes:
       - ./backend:/code
     environment:
-      - DB_URL=postgresql+psycopg2://postgres:postgres@test_db:5432/test_storage
+      - DB_URL=postgresql+psycopg2://postgres:postgres@test_db:5434/test_storage
     depends_on:
       - test_db
