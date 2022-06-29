@@ -1,10 +1,11 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, Request, Response
+from fastapi import APIRouter, Depends, Response
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from .. import crud
+from settings.dependencies import get_db
+from .. import db_client
 from .. import schemas
 
 router = APIRouter(
@@ -13,9 +14,6 @@ router = APIRouter(
     responses={404: {'description': 'Not found'}},
 )
 
-def get_db(request: Request):
-    return request.state.db
-
 
 @router.get('/', response_model=List[schemas.Item])
 async def read_items(
@@ -23,12 +21,12 @@ async def read_items(
     limit: int = 100,
     db: Session = Depends(get_db),
 ):
-    return crud.get_items(db, skip=skip, limit=limit)
+    return db_client.get_items(db, skip=skip, limit=limit)
 
 
 @router.get('/expired/', response_model=List[schemas.Item])
 async def read_expired_items(db: Session = Depends(get_db)):
-    return crud.get_expired_items(db)
+    return db_client.get_expired_items(db)
 
 
 @router.post('/', response_model=schemas.ItemCreate)
@@ -36,23 +34,23 @@ async def create_item(
     item: schemas.ItemCreate,
     db: Session = Depends(get_db),
 ):
-    storage = crud.get_storage_space_by_id(db, item.storage_space_id)
+    storage = db_client.get_storage_space_by_id(db, item.storage_space_id)
     items_in_storage_count = len(
-        crud.get_items_in_storage_place(db, item.storage_space_id)
+        db_client.get_items_in_storage_place(db, item.storage_space_id)
     )
     if items_in_storage_count >= storage.max_capacity:
         raise HTTPException(
             status_code=400,
             detail='Storage space is full.',
         )
-    item_type = crud.get_item_type_by_id(db, item.item_type_id)
+    item_type = db_client.get_item_type_by_id(db, item.item_type_id)
     if item_type.is_kept_cold and not storage.is_refrigerated:
         raise HTTPException(
             status_code=400,
             detail='This item should be placed to refrigerated storage.',
         )
 
-    return crud.create_item(db=db, item=item)
+    return db_client.create_item(db=db, item=item)
 
 
 @router.get(
@@ -63,7 +61,7 @@ async def read_item_by_id(
     item_id: int,
     db: Session = Depends(get_db),
 ):
-    db_item = crud.get_item_by_id(db, item_id)
+    db_item = db_client.get_item_by_id(db, item_id)
     if db_item:
         return db_item
     return Response(status_code=404)
@@ -78,10 +76,10 @@ async def update_item(
     item: schemas.ItemUpdate,
     db: Session = Depends(get_db),
 ):
-    current_item = crud.get_item_by_id(db ,item_id)
-    storage = crud.get_storage_space_by_id(db, item.storage_space_id)
+    current_item = db_client.get_item_by_id(db, item_id)
+    storage = db_client.get_storage_space_by_id(db, item.storage_space_id)
     items_in_storage_count = len(
-        crud.get_items_in_storage_place(db, item.storage_space_id)
+        db_client.get_items_in_storage_place(db, item.storage_space_id)
     )
     if (
         current_item.storage_space_id != item.storage_space_id and
@@ -91,13 +89,13 @@ async def update_item(
             status_code=400,
             detail='Storage space is full.',
         )
-    item_type = crud.get_item_type_by_id(db, current_item.item_type_id)
+    item_type = db_client.get_item_type_by_id(db, current_item.item_type_id)
     if item_type.is_kept_cold and not storage.is_refrigerated:
         raise HTTPException(
             status_code=400,
             detail='This item should be placed to refrigerated storage.',
         )
-    return crud.update_item(db, item_id, item)
+    return db_client.update_item(db, item_id, item)
 
 
 @router.delete(
@@ -108,8 +106,8 @@ async def delete_item(
     item_id: int,
     db: Session = Depends(get_db),
 ):
-    db_item = crud.get_item_by_id(db, item_id)
+    db_item = db_client.get_item_by_id(db, item_id)
     if db_item:
-        crud.delete_item(db, item_id)
+        db_client.delete_item(db, item_id)
         return Response(status_code=204)
     return Response(status_code=404)

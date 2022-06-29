@@ -1,9 +1,13 @@
+import sys
+
 from fastapi import FastAPI, Request, Response
 
 from settings.base import SessionLocal
-from storage.views import item
-from storage.views import item_type
-from storage.views import storage_space
+from storage.routers import item
+from storage.routers import item_type
+from storage.routers import storage_space
+
+sys.path.append('..')
 
 # Use existing db
 # Base.metadata.create_all(bind=engine)

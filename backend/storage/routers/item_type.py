@@ -3,7 +3,8 @@ from fastapi import Depends, HTTPException
 from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy.orm import Session
 
-from .. import crud
+from settings.dependencies import get_db
+from .. import db_client
 from .. import schemas
 
 router = APIRouter(
@@ -12,9 +13,6 @@ router = APIRouter(
     responses={404: {'description': 'Not found'}},
 )
 
-def get_db(request: Request):
-    return request.state.db
-
 
 @router.get('/', response_model=List[schemas.ItemType])
 async def read_item_types(
@@ -22,7 +20,7 @@ async def read_item_types(
     limit: int = 100,
     db: Session = Depends(get_db),
 ):
-    return crud.get_item_types(db, skip=skip, limit=limit)
+    return db_client.get_item_types(db, skip=skip, limit=limit)
 
 
 @router.post('/', response_model=schemas.ItemType)
@@ -30,13 +28,13 @@ async def create_item_type(
     item_type: schemas.ItemTypeCreate,
     db: Session = Depends(get_db),
 ):
-    db_item_type = crud.get_item_type_by_name(db, item_type.name)
+    db_item_type = db_client.get_item_type_by_name(db, item_type.name)
     if db_item_type:
         raise HTTPException(
             status_code=400,
             detail='Item type with this name already exists.',
         )
-    return crud.create_item_type(db=db, item_type=item_type)
+    return db_client.create_item_type(db=db, item_type=item_type)
 
 
 @router.get(
@@ -47,7 +45,7 @@ async def read_item_type_by_id(
     item_type_id: int,
     db: Session = Depends(get_db),
 ):
-    db_item_type = crud.get_item_type_by_id(db, item_type_id)
+    db_item_type = db_client.get_item_type_by_id(db, item_type_id)
     if db_item_type:
         return db_item_type
     return Response(status_code=404)
@@ -62,10 +60,10 @@ async def update_item_type(
     item_type: schemas.ItemTypeUpdate,
     db: Session = Depends(get_db),
 ):
-    current_item_type = crud.get_item_type_by_id(db, item_type_id)
+    current_item_type = db_client.get_item_type_by_id(db, item_type_id)
     if (
         item_type.is_kept_cold != current_item_type.is_kept_cold and
-        crud.get_items_with_specific_item_type(db, item_type_id)
+        db_client.get_items_with_specific_item_type(db, item_type_id)
     ):
         raise HTTPException(
             status_code=400,
@@ -74,7 +72,7 @@ async def update_item_type(
                 'the type exists.'
             ),
         )
-    return crud.update_item_type(db, item_type_id, item_type)
+    return db_client.update_item_type(db, item_type_id, item_type)
 
 
 @router.delete(
@@ -85,14 +83,14 @@ async def delete_item_type(
     item_type_id: int,
     db: Session = Depends(get_db),
 ):
-    db_item_type = crud.get_item_type_by_id(db, item_type_id)
+    db_item_type = db_client.get_item_type_by_id(db, item_type_id)
     if db_item_type:
-        if crud.get_items_with_specific_item_type(db, item_type_id):
+        if db_client.get_items_with_specific_item_type(db, item_type_id):
             raise HTTPException(
                 status_code=400,
                 detail='Items with this type exist. It can\'t be deleted.',
             )
 
-        crud.delete_item_type(db, item_type_id)
+        db_client.delete_item_type(db, item_type_id)
         return Response(status_code=204)
     return Response(status_code=404)
