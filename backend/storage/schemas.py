@@ -1,23 +1,26 @@
-from pydantic import BaseModel, constr, Field, FutureDate
-from datetime import date, datetime
-from . import crud
+from datetime import date
 
-class StorageSpaceBase(BaseModel):
+from pydantic import BaseModel, Field, FutureDate
+
+
+# class StorageSpaceBase(BaseModel):
+#     name: str = Field(max_length=32)
+#     is_refrigerated: bool
+#     max_capacity: int
+
+
+class StorageSpaceCreate(BaseModel):
     name: str = Field(max_length=32)
     is_refrigerated: bool
     max_capacity: int
 
 
-class StorageSpaceCreate(StorageSpaceBase):
-    pass
-
-
-class StorageSpaceUpdate(StorageSpaceBase):
+class StorageSpaceUpdate(BaseModel):
     name: str = Field(max_length=32)
     is_refrigerated: bool
 
 
-class StorageSpace(StorageSpaceBase):
+class StorageSpace(BaseModel):
     id: int
     name: str = Field(max_length=32)
     is_refrigerated: bool
@@ -27,20 +30,17 @@ class StorageSpace(StorageSpaceBase):
         orm_mode = True
 
 
-class ItemTypeBase(BaseModel):
+
+class ItemTypeCreate(BaseModel):
     name: str = Field(max_length=32)
     is_kept_cold: bool
 
 
-class ItemTypeCreate(ItemTypeBase):
-    pass
-
-
-class ItemTypeUpdate(ItemTypeBase):
+class ItemTypeUpdate(BaseModel):
     name: str = Field(max_length=32)
 
 
-class ItemType(ItemTypeBase):
+class ItemType(BaseModel):
     id: int
     name: str = Field(max_length=32)
     is_kept_cold: bool
@@ -49,23 +49,19 @@ class ItemType(ItemTypeBase):
         orm_mode = True
 
 
-class ItemBase(BaseModel):
+class ItemCreate(BaseModel):
     name: str = Field(max_length=32)
     expiration_date: FutureDate
     item_type_id: int
     storage_space_id: int
 
 
-class ItemCreate(ItemBase):
-    pass
-
-
-class ItemUpdate(ItemBase):
+class ItemUpdate(BaseModel):
     name: str = Field(max_length=32)
     storage_space_id: int
 
 
-class Item(ItemBase):
+class Item(BaseModel):
     id: int
     name: str = Field(max_length=32)
     expiration_date: date
