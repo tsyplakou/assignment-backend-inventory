@@ -3,12 +3,6 @@ from datetime import date
 from pydantic import BaseModel, Field, FutureDate
 
 
-# class StorageSpaceBase(BaseModel):
-#     name: str = Field(max_length=32)
-#     is_refrigerated: bool
-#     max_capacity: int
-
-
 class StorageSpaceCreate(BaseModel):
     name: str = Field(max_length=32)
     is_refrigerated: bool

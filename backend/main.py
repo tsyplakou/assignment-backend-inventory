@@ -9,9 +9,6 @@ from storage.routers import storage_space
 
 sys.path.append('..')
 
-# Use existing db
-# Base.metadata.create_all(bind=engine)
-
 app = FastAPI()
 app.include_router(storage_space.router)
 app.include_router(item_type.router)
