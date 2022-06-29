@@ -1,7 +1,13 @@
-# How to run
+# How to run project:
 
 ```
-docker-compose up
+docker-compose up web
+```
+
+# How to run tests:
+
+```
+docker-compose up test
 ```
 
 # Rocketloop Coding Assignment - Inventory Management API
