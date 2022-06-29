@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-
+from datetime import datetime
 from .. import models, schemas
 
 def get_item_by_id(db: Session, item_id: int):
@@ -41,3 +41,9 @@ def delete_item(db: Session, item_id: int):
     ).delete()
     db.commit()
     return True
+
+
+def get_expired_items(db: Session):
+    return db.query(models.Item).filter(
+        models.Item.expiration_date <= datetime.now().date()
+    ).all()

@@ -26,6 +26,11 @@ async def read_items(
     return crud.get_items(db, skip=skip, limit=limit)
 
 
+@router.get('/expired/', response_model=List[schemas.Item])
+async def read_expired_items(db: Session = Depends(get_db)):
+    return crud.get_expired_items(db)
+
+
 @router.post('/', response_model=schemas.Item)
 async def create_item(
     item: schemas.ItemCreate,
